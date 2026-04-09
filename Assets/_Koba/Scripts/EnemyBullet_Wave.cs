@@ -15,14 +15,11 @@ public class EnemyBullet_Wave : BaseEnemyBullet
     [Header("全体的なスピード")]
     [SerializeField] private float _speed = 5f;
 
-    private void Awake()
-    {
-        _startPos = transform.position;
-    }
 
     protected override void Start()
     {
         base.Start();
+        _startPos = transform.position;
         _startTime = Time.time * _speed;
     }
 

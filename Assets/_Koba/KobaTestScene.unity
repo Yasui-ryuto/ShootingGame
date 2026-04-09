@@ -485,8 +485,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c02bc10944ad47c46addf1d1265cc7ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyShotBullet
-  _bullet: {fileID: 8623134027808262043, guid: e571be19539201a48bb957cadf817620, type: 3}
-  _intervalTime: 0.1
+  _bullet: {fileID: 8623134027808262043, guid: 5b2696201beeaf247b478379e506d2e3, type: 3}
+  _intervalTime: 0.15
 --- !u!1 &2125284744
 GameObject:
   m_ObjectHideFlags: 0

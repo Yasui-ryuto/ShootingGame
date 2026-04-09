@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4841144264521820976}
   - component: {fileID: 5030340166520910765}
   m_Layer: 0
-  m_Name: Bullet_Wave
+  m_Name: EnemyBullet_Wave
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
