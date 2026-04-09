@@ -47,12 +47,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9e6ac06ac2672f44914d9021a47f9e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyBullet_Whip
-  _lifeTime: 5
-  _speed: 5
+  _lifeTime: 2
+  _speed: 6
   _angle_x: 0
   _angle_y: -1
-  _maxWhipAngle: 0.7
-  _increaseWhipAngle: 0.1
+  _maxWhipAngle: 3
+  _increaseWhipAngle: 0.2
+  _useSin: 1
 --- !u!212 &4331057446576438603
 SpriteRenderer:
   serializedVersion: 2

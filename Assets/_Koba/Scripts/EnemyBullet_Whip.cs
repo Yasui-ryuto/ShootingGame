@@ -12,13 +12,25 @@ public class EnemyBullet_Whip : EnemyBullet_Straight
     //弾全員で現在のWhipの角度を共有
     public static float nowWhipAngle = 0;
 
+    [SerializeField] private bool _useSin = false;
+
     protected override void Start()
     {
         base.Start();
-        SetWhipAngle();
+
+        if (_useSin)
+        {
+            SetWhipAngle_Sin();
+        }
+        else
+        {
+            SetWhipAngle();
+        }
     }
 
-
+    /// <summary>
+    /// だるい処理だけど、最大角度が自由に変えれるところは便利
+    /// </summary>
     private void SetWhipAngle()
     {
         if (whipDirection == 1)
@@ -40,6 +52,18 @@ public class EnemyBullet_Whip : EnemyBullet_Straight
             whipDirection = 1;
         }
 
+
         _angle = new Vector2(nowWhipAngle, _angle.y);
+    }
+
+    /// <summary>
+    /// どうやったら最大角度が大きくなるかわからない
+    /// そのままかけ算すると、まっすぐになればなるほど弾数が少なくなる←簡単になる...
+    /// </summary>
+    private void SetWhipAngle_Sin()
+    {
+        nowWhipAngle += _increaseWhipAngle;
+        float x = Mathf.Sin(nowWhipAngle);
+        _angle = new Vector2(x, _angle.y);
     }
 }
