@@ -12,6 +12,9 @@ public class EnemyBullet_Wave : BaseEnemyBullet
     [Header("周期")]
     [SerializeField] private float _frequency = 2f;
 
+    [Header("全体的なスピード")]
+    [SerializeField] private float _speed = 5f;
+
     private void Awake()
     {
         _startPos = transform.position;
@@ -20,7 +23,7 @@ public class EnemyBullet_Wave : BaseEnemyBullet
     protected override void Start()
     {
         base.Start();
-        _startTime = Time.time;
+        _startTime = Time.time * _speed;
     }
 
     private void Update()
@@ -30,7 +33,10 @@ public class EnemyBullet_Wave : BaseEnemyBullet
 
     protected override void MoveBullet()
     {
-        transform.position = 
-            new Vector2(Mathf.Sin((_startTime - Time.time) * _frequency) * _amplitude, (_startTime - Time.time) * _verticalSpeed) + _startPos;
+        float elapsed = Time.time * _speed - _startTime;
+        float x = Mathf.Sin((elapsed) * _frequency) * _amplitude;
+        float y = -elapsed * _verticalSpeed;
+
+        transform.position = new Vector2(x, y) + _startPos;
     }
 }

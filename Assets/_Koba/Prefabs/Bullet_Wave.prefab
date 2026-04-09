@@ -48,9 +48,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyBullet_Wave
   _lifeTime: 10
-  _width: 1
-  _height: 1
-  _cycle: 5
+  _amplitude: 5
+  _verticalSpeed: 4
+  _frequency: 2
+  _speed: 4
 --- !u!212 &4331057446576438603
 SpriteRenderer:
   serializedVersion: 2
