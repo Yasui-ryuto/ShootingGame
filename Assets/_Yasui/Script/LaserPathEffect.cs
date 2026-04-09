@@ -1,9 +1,9 @@
 using System.Collections;
 using UnityEngine;
+using static GameManager;
 
 public class LaserPathEffect : MonoBehaviour
 {
-    private GameObject player;
     private Vector3 playerDirect;
     [HideInInspector] public Vector3 endPosition; //エフェクト終了位置
     
@@ -16,7 +16,6 @@ public class LaserPathEffect : MonoBehaviour
 
     void Start()
     {
-        player = GameObject.Find("Player").gameObject;
         playerDirect = (player.transform.position - transform.position) * effectLength; // プレイヤーの方向を取得
         endPosition = player.transform.position + playerDirect; //エフェクト終了位置
 
