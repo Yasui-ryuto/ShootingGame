@@ -4,17 +4,27 @@ public class WaveAttaker : MonoBehaviour
 {
     [SerializeField] private bool isShoot = true;
     [SerializeField] private GameObject wave;
+    [SerializeField] private float shootIntervalTime = 0.2f;
     private float time;
 
+
+    private void Start()
+    {
+        if(wave == null)
+        {
+            Debug.LogError("wave‚ªƒZƒbƒg‚³‚ê‚Ä‚¢‚È‚¢");
+        }
+    }
     private void Update()
     {
         if (wave != null)
         {
             if (isShoot)
             {
-                if (time > 0.5)
+                if (time > shootIntervalTime)
                 {
-                    Instantiate(wave, transform.position, Quaternion.identity);
+                     GameObject obj = Instantiate(wave, transform.position, Quaternion.identity);
+                    obj.transform.SetParent(transform);
                     time = 0;
                 }
                 time += Time.deltaTime;
