@@ -315,6 +315,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1441780794}
+  - component: {fileID: 1441780798}
   - component: {fileID: 1441780793}
   - component: {fileID: 1441780796}
   - component: {fileID: 1441780795}
@@ -472,6 +473,20 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &1441780798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1441780792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c02bc10944ad47c46addf1d1265cc7ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyShotBullet
+  _bullet: {fileID: 8623134027808262043, guid: e571be19539201a48bb957cadf817620, type: 3}
+  _intervalTime: 0.2
 --- !u!1 &2125284744
 GameObject:
   m_ObjectHideFlags: 0

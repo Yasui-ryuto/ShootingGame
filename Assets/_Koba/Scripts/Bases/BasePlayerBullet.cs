@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerBullet : MonoBehaviour
+public class BasePlayerBullet : MonoBehaviour
 {
     [SerializeField] private float _lifeTime = 5f;
 

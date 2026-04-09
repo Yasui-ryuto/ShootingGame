@@ -104,5 +104,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93880f3ff87bada4d9f95f517340e162, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  waveSpeed: 1
-  wavaScale: 2
+  waveSpeed: 5
+  wavaScale: 8
