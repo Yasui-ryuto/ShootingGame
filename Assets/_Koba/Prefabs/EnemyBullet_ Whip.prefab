@@ -52,7 +52,7 @@ MonoBehaviour:
   _angle_x: 0
   _angle_y: -1
   _maxWhipAngle: 3
-  _increaseWhipAngle: 0.2
+  _increaseWhipAngle: 0.3
   _useSin: 1
 --- !u!212 &4331057446576438603
 SpriteRenderer:
