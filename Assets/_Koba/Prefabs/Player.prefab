@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4868621552844013604}
   - component: {fileID: 1597143077243960669}
+  - component: {fileID: -475313546251207468}
   - component: {fileID: 7728297726729672122}
   - component: {fileID: 6326033502686591237}
   - component: {fileID: 6673292951738466617}
@@ -49,6 +50,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   _moveSpeed: 5
+--- !u!114 &-475313546251207468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4503161702470270263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69e0ad05c03fa7944a6287b31bb5d14c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHP
+  playerHP: 20
 --- !u!114 &7728297726729672122
 MonoBehaviour:
   m_ObjectHideFlags: 0
