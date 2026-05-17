@@ -47,7 +47,7 @@ public class NamePlateController : MonoBehaviour
         {
             int[] playerHPs = obj.GetComponent<PlayerHP>().GetPlayerHPs();
 
-            Canvas.transform.Find("PlayerNamePlatNamePlateBack/HPBarBack/HPBar").GetComponent<Image>().fillAmount = (float)playerHPs[1] / (float)playerHPs[0]; //HPBar‚Ì’·‚³
+            Canvas.transform.Find("PlayerNamePlate/NamePlateBack/HPBarBack/HPBar").GetComponent<Image>().fillAmount = (float)playerHPs[1] / (float)playerHPs[0]; //HPBar‚Ì’·‚³
         }
         else
         {

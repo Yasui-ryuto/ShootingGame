@@ -21,7 +21,6 @@ public class NamePlate : MonoBehaviour
         {
             amount += HPBarInc;
             HPBar.GetComponent<Image>().fillAmount = amount; //HPBar‚Ì’·‚³
-            Debug.Log(HPBar.GetComponent<Image>().fillAmount);
             if(amount > 1)
             {
                 GameManager.Incetance.GetComponent<NamePlateController>().SetbarStart(true);

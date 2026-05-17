@@ -1,7 +1,8 @@
 using UnityEngine;
+using static GameManager;
 
 public class PlayerHP : MonoBehaviour
-{
+{ 
     [SerializeField] private int playerHP = 20;
     private int[] playerHPs = new int[2];
 
@@ -16,8 +17,9 @@ public class PlayerHP : MonoBehaviour
         if (other.gameObject.CompareTag("EnemyBullet"))
         {
             playerHPs[1]--;
+            GameManager.Incetance.GetComponent<NamePlateController>().ChangeHPBar(gameObject);
         }
-        if (playerHP < 1)
+        if (playerHPs[1] < 1)
         {
             Destroy(gameObject);
         }
