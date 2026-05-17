@@ -4,11 +4,14 @@ using static GameManager;
 public class EnemyHP : MonoBehaviour
 {
     [SerializeField] private int HP = 10;
+    private int[] HPs = new int[2];
     private GameManager manager;
 
     private void Start()
     {
         manager = Incetance;
+        HPs[0] = HP;
+        HPs[1] = HP;
     }
 
     private void OnTriggerEnter2D(Collider2D col)
@@ -17,16 +20,20 @@ public class EnemyHP : MonoBehaviour
         {
 
             //HP -= collision.;
-            HP--;
+            HPs[1]--;
+            manager.gameObject.GetComponent<NamePlateController>().ChangeHPBar(gameObject);
 
-            Debug.Log(HP);
-
-            if (HP <= 0)
+            if (HPs[1] <= 0)
             {
-                StartCoroutine(manager.BrokenEnemy(gameObject));
+                StartCoroutine(manager.gameObject.GetComponent<WaveController>().BrokenEnemy(gameObject));
                 gameObject.GetComponent<Collider2D>().enabled = false;
                 gameObject.GetComponent<EnemyShotBullet>().enabled = false;
             }
         }
+    }
+
+    public int[] GetHPs()
+    {
+        return HPs;
     }
 }

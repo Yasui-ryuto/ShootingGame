@@ -3,23 +3,19 @@ using UnityEngine;
 public class PlayerHP : MonoBehaviour
 {
     [SerializeField] private int playerHP = 20;
-    private HPBar bar;
+    private int[] playerHPs = new int[2];
 
     private void Start()
     {
-        bar = GameObject.Find("Canvas/HPBack/HPBar/HP").GetComponent<HPBar>();
-        if (bar == null )
-        {
-            Debug.LogError("bar is null");
-        }
+        playerHPs[0] = playerHP;
+        playerHPs[1] = playerHP;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("EnemyBullet"))
         {
-            playerHP--;
-            bar.ChangeHPBarLength();
+            playerHPs[1]--;
         }
         if (playerHP < 1)
         {
@@ -27,8 +23,8 @@ public class PlayerHP : MonoBehaviour
         }
     }
     
-    public int GetHP()
+    public int[] GetPlayerHPs()
     {
-        return playerHP;
+        return playerHPs;
     }
 }
