@@ -41,6 +41,8 @@ public class PlayerHP : MonoBehaviour
             effect.Play();
         }
 
+        transform.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0);
+
         yield return new WaitWhile(() => diedEffect[1].IsAlive(true));
 
         Destroy(gameObject);

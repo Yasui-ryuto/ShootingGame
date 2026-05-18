@@ -23,11 +23,13 @@ public class EnemyHP : MonoBehaviour
             HPs[1]--;
             manager.gameObject.GetComponent<NamePlateController>().ChangeHPBar(gameObject);
 
-            if (HPs[1] <= 0)
+            if (HPs[1] == 0)
             {
                 StartCoroutine(manager.gameObject.GetComponent<WaveController>().BrokenEnemy(gameObject));
                 gameObject.GetComponent<Collider2D>().enabled = false;
                 gameObject.GetComponent<EnemyShotBullet>().enabled = false;
+
+                HPs[1] = -1;
             }
         }
     }
