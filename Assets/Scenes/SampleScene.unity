@@ -5257,6 +5257,8 @@ MonoBehaviour:
   enemyWhip: {fileID: 7855901460285505350, guid: c3f7a1ba39e162942b1e76bf76286f76, type: 3}
   enemyRotation: {fileID: 5999206272315004587, guid: 233e362f317e7994cba9652a873166e6, type: 3}
   enemyWave: {fileID: 6488325553418799117, guid: e4a1877a9df44124f8d836bd0e7eec5a, type: 3}
+  enemyLaser: {fileID: 117517459449845467, guid: 2e7f3c9fdcf74294c9663da16f0e174e, type: 3}
+  enemyStop: {fileID: 3408831562931673700, guid: d6d7ecf288304bb4693c1e9821727cbf, type: 3}
   firstPos: {x: 0, y: 0, z: 0}
 --- !u!114 &605378283
 MonoBehaviour:

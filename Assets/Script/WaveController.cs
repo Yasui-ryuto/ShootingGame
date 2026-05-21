@@ -13,6 +13,8 @@ public class WaveController : MonoBehaviour
     [SerializeField] private GameObject enemyWhip;
     [SerializeField] private GameObject enemyRotation;
     [SerializeField] private GameObject enemyWave;
+    [SerializeField] private GameObject enemyLaser;
+    [SerializeField] private GameObject enemyStop;
 
     [Header("EnemySetting")]
     [SerializeField] private Vector3 firstPos;
@@ -38,6 +40,7 @@ public class WaveController : MonoBehaviour
                 Wave2();
                 break;
             case Situation.Wave3:
+                wave3();
                 break;
             case Situation.Wave4:
                 break;
@@ -121,6 +124,29 @@ public class WaveController : MonoBehaviour
 
     }
 
+    private void wave3()
+    {
+        //Wave1にに3回だけ実行
+        if (isWaveStart)
+        {
+            StartCoroutine(Wave3Start());
+            isWaveStart = false;
+        }
+    }
+
+    private IEnumerator Wave3Start()
+    {
+        manager.enemy[0] = Instantiate(enemyLaser, new Vector3(-2f, 4f, 0f), Quaternion.identity); //敵の生成
+        manager.enemy[0].GetComponent<LaserAttacker>().enabled = false; //敵の弾の発射を停止
+        
+
+        GetComponent<NamePlateController>().SetbarStart(false);
+
+        yield return StartCoroutine(namePlateCon.StartHPBar()); //HPBarの演出
+
+        player.GetComponent<PlayerShotBullet>().enabled = true; //プレイヤーの弾の発射を再開
+        manager.enemy[0].GetComponent<LaserAttacker>().enabled = true; //敵の弾の発射を再開
+    }
     public IEnumerator BrokenEnemy(GameObject enemy)
     {
         int enemyCount = 0; //配列内のemptyオブジェクトの数
