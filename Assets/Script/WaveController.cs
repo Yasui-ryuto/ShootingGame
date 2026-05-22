@@ -14,6 +14,9 @@ public class WaveController : MonoBehaviour
     [SerializeField] private GameObject enemyRotation;
     [SerializeField] private GameObject enemyWave;
 
+    [Header("EnemyBreakEffect")]
+    [SerializeField] private GameObject[] diedEffectPrefab;
+
     [Header("EnemySetting")]
     [SerializeField] private Vector3 firstPos;
 
@@ -85,7 +88,7 @@ public class WaveController : MonoBehaviour
         manager.enemy[0] = Instantiate(enemyWave, firstPos, Quaternion.identity); //敵の生成
         manager.enemy[0].GetComponent<EnemyShotBullet>().enabled = false; //敵の弾の発射を停止
 
-        GetComponent<NamePlateController>().SetbarStart(false);
+        GetComponent<NamePlateController>().SetbarStart(false); //barStart(HPBar演出フラグ)をfalseにする
 
         yield return StartCoroutine(namePlateCon.StartHPBar()); //HPBarの演出
 
@@ -110,8 +113,7 @@ public class WaveController : MonoBehaviour
         manager.enemy[1] = Instantiate(enemyWhip, new Vector3(2f, 4f, 0f), Quaternion.identity); //敵の生成
         manager.enemy[1].GetComponent<EnemyShotBullet>().enabled = false; //敵の弾の発射を停止
 
-
-        GetComponent<NamePlateController>().SetbarStart(false);
+        GetComponent<NamePlateController>().SetbarStart(false); //barStart(HPBar演出フラグ)をfalseにする
 
         yield return StartCoroutine(namePlateCon.StartHPBar()); //HPBarの演出
 
@@ -132,7 +134,10 @@ public class WaveController : MonoBehaviour
                 //配列内のオブジェクトと破壊したいオブジェクトが一緒だった時
                 if (manager.enemy[i] == enemy)
                 {
-                    yield return StartCoroutine(BreakEnemy(enemy));
+                    enemy.GetComponent<EnemyShotBullet>().enabled = false;
+
+                    yield return StartCoroutine(DiedEffect(enemy, diedEffectPrefab)); //アニメーションが終わるまで待つ
+
                     manager.enemy[i] = manager.empty;
                     manager.HPBars[i] = manager.empty;
                 }
@@ -152,9 +157,38 @@ public class WaveController : MonoBehaviour
 
     }
 
-    //敵の消滅アニメーション
-    private IEnumerator BreakEnemy(GameObject enemy)
+    //敵の消滅エフェクト
+    public IEnumerator DiedEffect(GameObject obj, GameObject[] effects)
     {
-        yield return null;
+        ParticleSystem[] effect = new ParticleSystem[effects.Length];
+        for (int i = 0; i < effects.Length; i++)
+        {
+            effect[i] = Instantiate(effects[i], obj.transform.position, Quaternion.identity).GetComponent<ParticleSystem>();
+            effect[i].Play();
+        }
+
+        obj.transform.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0);
+
+        yield return new WaitWhile(() => MaxTimeEffect(effect).IsAlive(true));
+
+        Destroy(obj);
+    }
+
+    public ParticleSystem MaxTimeEffect(ParticleSystem[] effects)
+    {
+        ParticleSystem maxEffect = null;
+        foreach(var effect in effects)
+        {
+            if(maxEffect == null)
+            {
+                maxEffect = effect;
+            }
+            else if(maxEffect.main.duration > effect.main.duration)
+            {
+                maxEffect = effect;
+            }
+        }
+
+        return maxEffect;
     }
 }
