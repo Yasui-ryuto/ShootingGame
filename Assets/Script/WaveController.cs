@@ -1,0 +1,220 @@
+using UnityEngine;
+using System.Collections;
+using UnityEngine.InputSystem;
+using static GameManager;
+
+public class WaveController : MonoBehaviour
+{
+    private GameManager manager;
+    private NamePlateController namePlateCon;
+    [SerializeField] private Situation situation = 0;
+
+    [Header("EnemyObject")]
+    [SerializeField] private GameObject enemyWhip;
+    [SerializeField] private GameObject enemyRotation;
+    [SerializeField] private GameObject enemyWave;
+    [SerializeField] private GameObject enemyLaser;
+    [SerializeField] private GameObject enemyStop;
+
+    [Header("EnemyBreakEffect")]
+    [SerializeField] private GameObject[] diedEffectPrefab;
+
+    [Header("EnemySetting")]
+    [SerializeField] private Vector3 firstPos;
+
+    private bool isWaveStart = true; //ウェーブが始まってるかのフラグ
+
+    private void Start()
+    {
+        manager = GameManager.Incetance;
+        namePlateCon = transform.GetComponent<NamePlateController>();
+    }
+    private void Update()
+    {
+        switch (situation)
+        {
+            case Situation.GameInterval:
+                GameInterval();
+                break;
+            case Situation.Wave1:
+                Wave1();
+                break;
+            case Situation.Wave2:
+                Wave2();
+                break;
+            case Situation.Wave3:
+                wave3();
+                break;
+            case Situation.Wave4:
+                break;
+
+        }
+
+    }
+
+    private void GameInterval()
+    {
+        //スペースキーを押して３秒後ウェーブ１開始
+        if (Keyboard.current.spaceKey.wasPressedThisFrame)
+        {
+            StartCoroutine(GameStart());
+        }
+    }
+
+    private IEnumerator GameStart()
+    {
+        Debug.Log("3");
+        yield return new WaitForSeconds(1);
+        Debug.Log("2");
+        yield return new WaitForSeconds(1);
+        Debug.Log("1");
+        yield return new WaitForSeconds(1);
+        Debug.Log("Start");
+        yield return new WaitForSeconds(1);
+
+
+        situation++;
+    }
+
+    private void Wave1()
+    {
+        //Wave1にに1回だけ実行
+        if (isWaveStart)
+        {
+            StartCoroutine(Wave1Start());
+            isWaveStart = false;
+        }
+    }
+
+    private IEnumerator Wave1Start()
+    {
+        manager.enemy[0] = Instantiate(enemyWave, firstPos, Quaternion.identity); //敵の生成
+        manager.enemy[0].GetComponent<EnemyShotBullet>().enabled = false; //敵の弾の発射を停止
+
+        GetComponent<NamePlateController>().SetbarStart(false); //barStart(HPBar演出フラグ)をfalseにする
+
+        yield return StartCoroutine(namePlateCon.StartHPBar()); //HPBarの演出
+
+        player.GetComponent<PlayerShotBullet>().enabled = true; //プレイヤーの弾の発射を再開
+        manager.enemy[0].GetComponent<EnemyShotBullet>().enabled = true; //敵の弾の発射を再開
+    }
+
+    private void Wave2()
+    {
+        //敵の生成
+        if (isWaveStart)
+        {
+            StartCoroutine(Wave2Start());
+            isWaveStart = false;
+        }
+    }
+
+    private IEnumerator Wave2Start()
+    {
+        manager.enemy[0] = Instantiate(enemyWave, new Vector3(-2f, 4f, 0f), Quaternion.identity); //敵の生成
+        manager.enemy[0].GetComponent<EnemyShotBullet>().enabled = false; //敵の弾の発射を停止
+        manager.enemy[1] = Instantiate(enemyWhip, new Vector3(2f, 4f, 0f), Quaternion.identity); //敵の生成
+        manager.enemy[1].GetComponent<EnemyShotBullet>().enabled = false; //敵の弾の発射を停止
+
+        GetComponent<NamePlateController>().SetbarStart(false); //barStart(HPBar演出フラグ)をfalseにする
+
+        yield return StartCoroutine(namePlateCon.StartHPBar()); //HPBarの演出
+
+        player.GetComponent<PlayerShotBullet>().enabled = true; //プレイヤーの弾の発射を再開
+        manager.enemy[0].GetComponent<EnemyShotBullet>().enabled = true; //敵の弾の発射を再開
+        manager.enemy[1].GetComponent<EnemyShotBullet>().enabled = true; //敵の弾の発射を再開
+
+    }
+
+    private void wave3()
+    {
+        //Wave1にに3回だけ実行
+        if (isWaveStart)
+        {
+            StartCoroutine(Wave3Start());
+            isWaveStart = false;
+        }
+    }
+
+    private IEnumerator Wave3Start()
+    {
+        manager.enemy[0] = Instantiate(enemyLaser, new Vector3(-2f, 4f, 0f), Quaternion.identity); //敵の生成
+        manager.enemy[0].GetComponent<LaserAttacker>().enabled = false; //敵の弾の発射を停止
+        
+
+        GetComponent<NamePlateController>().SetbarStart(false);
+
+        yield return StartCoroutine(namePlateCon.StartHPBar()); //HPBarの演出
+
+        player.GetComponent<PlayerShotBullet>().enabled = true; //プレイヤーの弾の発射を再開
+        manager.enemy[0].GetComponent<LaserAttacker>().enabled = true; //敵の弾の発射を再開
+    }
+    public IEnumerator BrokenEnemy(GameObject enemy)
+    {
+        int enemyCount = 0; //配列内のemptyオブジェクトの数
+
+        for (int i = 0; i < manager.enemy.Length; i++)
+        {
+            if (manager.enemy[i] == manager.empty || manager.enemy[i] == enemy)
+            {
+                //配列内のオブジェクトと破壊したいオブジェクトが一緒だった時
+                if (manager.enemy[i] == enemy)
+                {
+                    enemy.GetComponent<EnemyShotBullet>().enabled = false;
+
+                    yield return StartCoroutine(DiedEffect(enemy, diedEffectPrefab)); //アニメーションが終わるまで待つ
+
+                    manager.enemy[i] = manager.empty;
+                    manager.HPBars[i] = manager.empty;
+                }
+                enemyCount++;
+            }
+        }
+
+        //敵がいなくなれば次のウェーブに行く
+        if (manager.enemy.Length == enemyCount)
+        {
+            situation++;
+            isWaveStart = true;
+            GetComponent<NamePlateController>().SetbarStart(false);
+        }
+
+        Destroy(enemy);
+
+    }
+
+    //敵の消滅エフェクト
+    public IEnumerator DiedEffect(GameObject obj, GameObject[] effects)
+    {
+        ParticleSystem[] effect = new ParticleSystem[effects.Length];
+        for (int i = 0; i < effects.Length; i++)
+        {
+            effect[i] = Instantiate(effects[i], obj.transform.position, Quaternion.identity).GetComponent<ParticleSystem>();
+            effect[i].Play();
+        }
+
+        obj.transform.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0);
+
+        yield return new WaitWhile(() => MaxTimeEffect(effect).IsAlive(true));
+
+        Destroy(obj);
+    }
+
+    public ParticleSystem MaxTimeEffect(ParticleSystem[] effects)
+    {
+        ParticleSystem maxEffect = null;
+        foreach(var effect in effects)
+        {
+            if(maxEffect == null)
+            {
+                maxEffect = effect;
+            }
+            else if(maxEffect.main.duration > effect.main.duration)
+            {
+                maxEffect = effect;
+            }
+        }
+
+        return maxEffect;
+    }
+}
