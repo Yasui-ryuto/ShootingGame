@@ -27,9 +27,9 @@ public class LaserPathEffect : MonoBehaviour
     void Update()
     {
         //エフェクト終了位置に近づいたら
-        if (Vector3.Distance(transform.position, player.transform.position + playerDirect) > 1f)
+        if (Vector3.Distance(transform.position, endPosition) > 1f)
         {
-            transform.position = Vector3.SmoothDamp(transform.position, player.transform.position + playerDirect, ref velocity, 0.02f); //オブジェクトを終了位置に近づける
+            transform.position = Vector3.SmoothDamp(transform.position, endPosition, ref velocity, 0.02f); //オブジェクトを終了位置に近づける
         }
         else if(isLaser)
         {

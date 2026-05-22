@@ -27,9 +27,17 @@ public class EnemyHP : MonoBehaviour
             {
                 StartCoroutine(manager.gameObject.GetComponent<WaveController>().BrokenEnemy(gameObject));
                 gameObject.GetComponent<Collider2D>().enabled = false;
-                gameObject.GetComponent<EnemyShotBullet>().enabled = false;
+                if (gameObject.GetComponent<EnemyShotBullet>())
+                {
+                    gameObject.GetComponent<EnemyShotBullet>().enabled = false;
+                }
+                else if (gameObject.GetComponent<LaserAttacker>())
+                {
+                    gameObject.GetComponent <LaserAttacker>().enabled = false;
+                }
 
-                HPs[1] = -1;
+
+                    HPs[1] = -1;
             }
         }
     }

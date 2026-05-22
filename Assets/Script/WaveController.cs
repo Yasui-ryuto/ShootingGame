@@ -90,6 +90,7 @@ public class WaveController : MonoBehaviour
     {
         manager.enemy[0] = Instantiate(enemyWave, firstPos, Quaternion.identity); //“G‚Ì¶¬
         manager.enemy[0].GetComponent<EnemyShotBullet>().enabled = false; //“G‚Ì’e‚Ì”­Ë‚ğ’â~
+        player.GetComponent<PlayerShotBullet>().enabled = false; //ƒvƒŒƒCƒ„[‚Ì’e‚Ì”­Ë‚ğ’â~
 
         GetComponent<NamePlateController>().SetbarStart(false); //barStart(HPBar‰‰oƒtƒ‰ƒO)‚ğfalse‚É‚·‚é
 
@@ -115,6 +116,7 @@ public class WaveController : MonoBehaviour
         manager.enemy[0].GetComponent<EnemyShotBullet>().enabled = false; //“G‚Ì’e‚Ì”­Ë‚ğ’â~
         manager.enemy[1] = Instantiate(enemyWhip, new Vector3(2f, 4f, 0f), Quaternion.identity); //“G‚Ì¶¬
         manager.enemy[1].GetComponent<EnemyShotBullet>().enabled = false; //“G‚Ì’e‚Ì”­Ë‚ğ’â~
+        player.GetComponent<PlayerShotBullet>().enabled = false; //ƒvƒŒƒCƒ„[‚Ì’e‚Ì”­Ë‚ğ’â~
 
         GetComponent<NamePlateController>().SetbarStart(false); //barStart(HPBar‰‰oƒtƒ‰ƒO)‚ğfalse‚É‚·‚é
 
@@ -140,7 +142,9 @@ public class WaveController : MonoBehaviour
     {
         manager.enemy[0] = Instantiate(enemyLaser, new Vector3(-2f, 4f, 0f), Quaternion.identity); //“G‚Ì¶¬
         manager.enemy[0].GetComponent<LaserAttacker>().enabled = false; //“G‚Ì’e‚Ì”­Ë‚ğ’â~
-        
+        manager.enemy[1] = Instantiate(enemyLaser, new Vector3(2f, 4f, 0f), Quaternion.identity); //“G‚Ì¶¬
+        manager.enemy[1].GetComponent<LaserAttacker>().enabled = false; //“G‚Ì’e‚Ì”­Ë‚ğ’â~
+        player.GetComponent<PlayerShotBullet>().enabled = false; //ƒvƒŒƒCƒ„[‚Ì’e‚Ì”­Ë‚ğ’â~
 
         GetComponent<NamePlateController>().SetbarStart(false);
 
@@ -148,6 +152,7 @@ public class WaveController : MonoBehaviour
 
         player.GetComponent<PlayerShotBullet>().enabled = true; //ƒvƒŒƒCƒ„[‚Ì’e‚Ì”­Ë‚ğÄŠJ
         manager.enemy[0].GetComponent<LaserAttacker>().enabled = true; //“G‚Ì’e‚Ì”­Ë‚ğÄŠJ
+        manager.enemy[1].GetComponent<LaserAttacker>().enabled = true; //“G‚Ì’e‚Ì”­Ë‚ğÄŠJ
     }
     public IEnumerator BrokenEnemy(GameObject enemy)
     {
@@ -160,12 +165,18 @@ public class WaveController : MonoBehaviour
                 //”z—ñ“à‚ÌƒIƒuƒWƒFƒNƒg‚Æ”j‰ó‚µ‚½‚¢ƒIƒuƒWƒFƒNƒg‚ªˆê‚¾‚Á‚½
                 if (manager.enemy[i] == enemy)
                 {
-                    enemy.GetComponent<EnemyShotBullet>().enabled = false;
+                    if (enemy.GetComponent<EnemyShotBullet>())
+                    {
+                        enemy.GetComponent<EnemyShotBullet>().enabled = false;
+                    }
+                    else if (enemy.GetComponent<LaserAttacker>())
+                    {
+                        enemy.GetComponent<LaserAttacker>().enabled = false;
+                    }
 
                     yield return StartCoroutine(DiedEffect(enemy, diedEffectPrefab)); //ƒAƒjƒ[ƒVƒ‡ƒ“‚ªI‚í‚é‚Ü‚Å‘Ò‚Â
 
                     manager.enemy[i] = manager.empty;
-                    manager.HPBars[i] = manager.empty;
                 }
                 enemyCount++;
             }
@@ -176,6 +187,11 @@ public class WaveController : MonoBehaviour
         {
             situation++;
             isWaveStart = true;
+            for(int i = 0; i < manager.HPBars.Length; i++)
+            {
+                Destroy(manager.HPBars[i]);
+                manager.HPBars[i] = manager.empty;
+            }
             GetComponent<NamePlateController>().SetbarStart(false);
         }
 
@@ -191,6 +207,21 @@ public class WaveController : MonoBehaviour
         {
             effect[i] = Instantiate(effects[i], obj.transform.position, Quaternion.identity).GetComponent<ParticleSystem>();
             effect[i].Play();
+        }
+
+        if (obj.CompareTag("Player"))
+        {
+            foreach(GameObject enemy in manager.enemy)
+            {
+                if (enemy.GetComponent<EnemyShotBullet>())
+                {
+                    enemy.GetComponent<EnemyShotBullet>().enabled = false;
+                }
+                else if (enemy.GetComponent<LaserAttacker>())
+                {
+                    enemy.GetComponent <LaserAttacker>().enabled = false;
+                }
+            }
         }
 
         obj.transform.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0);

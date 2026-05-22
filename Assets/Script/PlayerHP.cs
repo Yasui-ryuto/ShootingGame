@@ -9,6 +9,10 @@ public class PlayerHP : MonoBehaviour
 
     [SerializeField] private GameObject[] diedEffect;
     [SerializeField] private GameObject damageEffect;
+    [SerializeField] private float damageIntervalTime = 0.2f;
+    [SerializeField] private float damageAreaStay = 0f;
+    private bool damageOn = false;
+    private Collider2D col;
 
     private void Start()
     {
@@ -19,6 +23,23 @@ public class PlayerHP : MonoBehaviour
         //{
         //    diedEffect[i] = transform.GetChild(i).gameObject.GetComponent<ParticleSystem>();
         //}
+    }
+
+    private void Update()
+    {
+        if (damageOn)
+        {
+            damageAreaStay++;
+
+            if (damageAreaStay > damageIntervalTime * 60)
+            {
+                playerHPs[1]--;
+                StartCoroutine(DamageEffect(col.gameObject));
+                GameManager.Incetance.GetComponent<NamePlateController>().ChangeHPBar(gameObject);
+                damageAreaStay = 0f;
+
+            }
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -33,6 +54,28 @@ public class PlayerHP : MonoBehaviour
         {
             playerHPs[1] = -1;
             StartCoroutine(GameManager.Incetance.gameObject.GetComponent<WaveController>().DiedEffect(gameObject, diedEffect));
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D other)
+    {
+        
+        if (other.gameObject.CompareTag("EnemyBullet"))
+        {
+            if (!damageOn)
+            {
+                col = other;
+                damageOn = true;
+            }
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("EnemyBullet"))
+        {
+            damageAreaStay = 0f;
+            damageOn = false;
         }
     }
     private IEnumerator DamageEffect(GameObject bullet)
