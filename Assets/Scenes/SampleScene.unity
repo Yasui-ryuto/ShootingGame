@@ -424,6 +424,8 @@ MonoBehaviour:
   diedEffectPrefab:
   - {fileID: 7786650514864039244, guid: 00aafbbfc1ed22b43a3bb539bed61ee4, type: 3}
   firstPos: {x: 0, y: 4, z: 0}
+  enemyLaser: {fileID: 117517459449845467, guid: 2e7f3c9fdcf74294c9663da16f0e174e, type: 3}
+  enemyStop: {fileID: 3408831562931673700, guid: d6d7ecf288304bb4693c1e9821727cbf, type: 3}
 --- !u!114 &605378283
 MonoBehaviour:
   m_ObjectHideFlags: 0
