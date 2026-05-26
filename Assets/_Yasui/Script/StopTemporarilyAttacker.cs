@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class StopTemporarilyAttacker : MonoBehaviour
 {
-    [SerializeField] private bool stopTemporarily = true;
+    private bool stopTemporarily = true;
     [SerializeField] private GameObject stopBullet;
     private void Update()
     {
@@ -16,6 +16,9 @@ public class StopTemporarilyAttacker : MonoBehaviour
             {
                 stopTemporarily = false;
             }
+        }else if(transform.childCount == 0)
+        {
+            stopTemporarily = true;
         }
     }
 }

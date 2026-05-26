@@ -43,13 +43,16 @@ public class WaveController : MonoBehaviour
                 Wave2();
                 break;
             case Situation.Wave3:
-                wave3();
+                Wave3();
                 break;
             case Situation.Wave4:
+                Wave4();
+                break;
+            case Situation.Wave5:
+                Wave5();
                 break;
 
         }
-
     }
 
     private void GameInterval()
@@ -72,7 +75,6 @@ public class WaveController : MonoBehaviour
         Debug.Log("Start");
         yield return new WaitForSeconds(1);
 
-
         situation++;
     }
 
@@ -90,7 +92,6 @@ public class WaveController : MonoBehaviour
     {
         manager.enemy[0] = Instantiate(enemyWave, firstPos, Quaternion.identity); //“G‚Ì¶¬
         manager.enemy[0].GetComponent<EnemyShotBullet>().enabled = false; //“G‚Ì’e‚Ì”­Ë‚ğ’â~
-        player.GetComponent<PlayerShotBullet>().enabled = false; //ƒvƒŒƒCƒ„[‚Ì’e‚Ì”­Ë‚ğ’â~
 
         GetComponent<NamePlateController>().SetbarStart(false); //barStart(HPBar‰‰oƒtƒ‰ƒO)‚ğfalse‚É‚·‚é
 
@@ -116,7 +117,6 @@ public class WaveController : MonoBehaviour
         manager.enemy[0].GetComponent<EnemyShotBullet>().enabled = false; //“G‚Ì’e‚Ì”­Ë‚ğ’â~
         manager.enemy[1] = Instantiate(enemyWhip, new Vector3(2f, 4f, 0f), Quaternion.identity); //“G‚Ì¶¬
         manager.enemy[1].GetComponent<EnemyShotBullet>().enabled = false; //“G‚Ì’e‚Ì”­Ë‚ğ’â~
-        player.GetComponent<PlayerShotBullet>().enabled = false; //ƒvƒŒƒCƒ„[‚Ì’e‚Ì”­Ë‚ğ’â~
 
         GetComponent<NamePlateController>().SetbarStart(false); //barStart(HPBar‰‰oƒtƒ‰ƒO)‚ğfalse‚É‚·‚é
 
@@ -128,9 +128,9 @@ public class WaveController : MonoBehaviour
 
     }
 
-    private void wave3()
+    private void Wave3()
     {
-        //Wave1‚É‚É3‰ñ‚¾‚¯Às
+        //Wave3‚É‚É3‰ñ‚¾‚¯Às
         if (isWaveStart)
         {
             StartCoroutine(Wave3Start());
@@ -144,7 +144,6 @@ public class WaveController : MonoBehaviour
         manager.enemy[0].GetComponent<LaserAttacker>().enabled = false; //“G‚Ì’e‚Ì”­Ë‚ğ’â~
         manager.enemy[1] = Instantiate(enemyLaser, new Vector3(2f, 4f, 0f), Quaternion.identity); //“G‚Ì¶¬
         manager.enemy[1].GetComponent<LaserAttacker>().enabled = false; //“G‚Ì’e‚Ì”­Ë‚ğ’â~
-        player.GetComponent<PlayerShotBullet>().enabled = false; //ƒvƒŒƒCƒ„[‚Ì’e‚Ì”­Ë‚ğ’â~
 
         GetComponent<NamePlateController>().SetbarStart(false);
 
@@ -154,6 +153,62 @@ public class WaveController : MonoBehaviour
         manager.enemy[0].GetComponent<LaserAttacker>().enabled = true; //“G‚Ì’e‚Ì”­Ë‚ğÄŠJ
         manager.enemy[1].GetComponent<LaserAttacker>().enabled = true; //“G‚Ì’e‚Ì”­Ë‚ğÄŠJ
     }
+
+    private void Wave4()
+    {
+        //Wave4‚É‚É1‰ñ‚¾‚¯Às
+        if (isWaveStart)
+        {
+            StartCoroutine(Wave4Start());
+            isWaveStart = false;
+        }
+    }
+
+    private IEnumerator Wave4Start()
+    {
+        manager.enemy[0] = Instantiate(enemyStop, new Vector3(-2f, 4f, 0f), Quaternion.identity); //“G‚Ì¶¬
+        manager.enemy[0].GetComponent<StopTemporarilyAttacker>().enabled = false; //“G‚Ì’e‚Ì”­Ë‚ğ’â~
+        manager.enemy[1] = Instantiate(enemyLaser, new Vector3(2f, 4f, 0f), Quaternion.identity); //“G‚Ì¶¬
+        manager.enemy[1].GetComponent<LaserAttacker>().enabled = false; //“G‚Ì’e‚Ì”­Ë‚ğ’â~
+
+        GetComponent<NamePlateController>().SetbarStart(false);
+
+        yield return StartCoroutine(namePlateCon.StartHPBar()); //HPBar‚Ì‰‰o
+
+        player.GetComponent<PlayerShotBullet>().enabled = true; //ƒvƒŒƒCƒ„[‚Ì’e‚Ì”­Ë‚ğÄŠJ
+        manager.enemy[0].GetComponent<StopTemporarilyAttacker>().enabled = true; //“G‚Ì’e‚Ì”­Ë‚ğÄŠJ
+        manager.enemy[1].GetComponent<LaserAttacker>().enabled = true; //“G‚Ì’e‚Ì”­Ë‚ğÄŠJ
+    }
+
+    private void Wave5()
+    {
+        //Wave5‚É‚É1‰ñ‚¾‚¯Às
+        if (isWaveStart)
+        {
+            StartCoroutine(Wave5Start());
+            isWaveStart = false;
+        }
+    }
+
+    private IEnumerator Wave5Start()
+    {
+        manager.enemy[0] = Instantiate(enemyLaser, new Vector3(-3f, 4f, 0f), Quaternion.identity); //“G‚Ì¶¬
+        manager.enemy[0].GetComponent<LaserAttacker>().enabled = false; //“G‚Ì’e‚Ì”­Ë‚ğ’â~
+        manager.enemy[1] = Instantiate(enemyStop, new Vector3(4f, 0f, 0f), Quaternion.identity); //“G‚Ì¶¬
+        manager.enemy[1].GetComponent<StopTemporarilyAttacker>().enabled = false; //“G‚Ì’e‚Ì”­Ë‚ğ’â~
+        manager.enemy[2] = Instantiate(enemyWhip, new Vector3(4f, 4f, 0f), Quaternion.identity); //“G‚Ì¶¬
+        manager.enemy[2].GetComponent<EnemyShotBullet>().enabled = false; //“G‚Ì’e‚Ì”­Ë‚ğ’â~
+
+        GetComponent<NamePlateController>().SetbarStart(false);
+
+        yield return StartCoroutine(namePlateCon.StartHPBar()); //HPBar‚Ì‰‰o
+
+        player.GetComponent<PlayerShotBullet>().enabled = true; //ƒvƒŒƒCƒ„[‚Ì’e‚Ì”­Ë‚ğÄŠJ
+        manager.enemy[0].GetComponent<LaserAttacker>().enabled = true; //“G‚Ì’e‚Ì”­Ë‚ğÄŠJ
+        manager.enemy[1].GetComponent<StopTemporarilyAttacker>().enabled = true; //“G‚Ì’e‚Ì”­Ë‚ğÄŠJ
+        manager.enemy[2].GetComponent<EnemyShotBullet>().enabled = true; //“G‚Ì’e‚Ì”­Ë‚ğÄŠJ
+    }
+
     public IEnumerator BrokenEnemy(GameObject enemy)
     {
         int enemyCount = 0; //”z—ñ“à‚ÌemptyƒIƒuƒWƒFƒNƒg‚Ì”
@@ -182,21 +237,31 @@ public class WaveController : MonoBehaviour
             }
         }
 
+        Coroutine coroutine = null;
+
         //“G‚ª‚¢‚È‚­‚È‚ê‚ÎŸ‚ÌƒEƒF[ƒu‚És‚­
-        if (manager.enemy.Length == enemyCount)
+        if (manager.enemy.Length == enemyCount && coroutine == null)
         {
-            situation++;
-            isWaveStart = true;
-            for(int i = 0; i < manager.HPBars.Length; i++)
-            {
-                Destroy(manager.HPBars[i]);
-                manager.HPBars[i] = manager.empty;
-            }
-            GetComponent<NamePlateController>().SetbarStart(false);
+            yield return coroutine = StartCoroutine(NextWave());
         }
 
         Destroy(enemy);
+    }
 
+    private IEnumerator NextWave()
+    {
+        player.GetComponent<PlayerShotBullet>().enabled = false; //ƒvƒŒƒCƒ„[‚Ì’e‚Ì”­Ë‚ğ’â~
+
+        yield return new WaitForSeconds(2);
+
+        situation++;
+        isWaveStart = true;
+        for (int i = 0; i < manager.HPBars.Length; i++)
+        {
+            Destroy(manager.HPBars[i]);
+            manager.HPBars[i] = manager.empty;
+        }
+        GetComponent<NamePlateController>().SetbarStart(false);
     }
 
     //“G‚ÌÁ–ÅƒGƒtƒFƒNƒg

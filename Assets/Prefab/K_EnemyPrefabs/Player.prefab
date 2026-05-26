@@ -63,6 +63,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHP
   playerHP: 20
+  diedEffect: []
+  damageEffect: {fileID: 0}
+  damageIntervalTime: 0.5
+  damageAreaStay: 0
 --- !u!114 &7728297726729672122
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -163,7 +167,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!70 &4403137489870033408
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
