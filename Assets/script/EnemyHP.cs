@@ -25,7 +25,7 @@ public class EnemyHP : MonoBehaviour
 
             if (HPs[1] == 0)
             {
-                StartCoroutine(manager.gameObject.GetComponent<WaveController>().BrokenEnemy(gameObject));
+                StartCoroutine(manager.gameObject.GetComponent<WaveController>().BreakEnemy(gameObject));
                 gameObject.GetComponent<Collider2D>().enabled = false;
                 if (gameObject.GetComponent<EnemyShotBullet>())
                 {

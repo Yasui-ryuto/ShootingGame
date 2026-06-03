@@ -2,21 +2,29 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [HideInInspector] public static GameObject player;
+    public GameObject playerPrefab;
+    [HideInInspector] public GameObject player;
 
     [HideInInspector] public static GameManager Incetance { get; private set; }
     public GameObject empty; //空のオブジェクト
     [HideInInspector] public GameObject[] enemy = new GameObject[10]; //ステージ上にある敵を入れる
     [HideInInspector] public GameObject[] HPBars = new GameObject[10]; //HPBarを入れる
 
+    public Situation situation = 0;
+    public GameObject gameOver;
+
+
     public enum Situation
     {
+        ControllerGuide,
         GameInterval,
         Wave1,
         Wave2,
         Wave3,
         Wave4,
         Wave5,
+        GameClear,
+        Died,
     }
 
     private void Awake()
@@ -34,4 +42,5 @@ public class GameManager : MonoBehaviour
             HPBars[i] = empty;
         }
     }
+
 }

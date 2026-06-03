@@ -25,7 +25,7 @@ public class StopBullet : MonoBehaviour
             }
             else
             {
-                secondPosition = player.transform.position + (player.transform.position - transform.position) * 1.3f; // プレイヤーの方向を取得
+                secondPosition = Incetance.player.transform.position + (Incetance.player.transform.position - transform.position) * 1.3f; // プレイヤーの方向を取得
 
                 second = true;
             }

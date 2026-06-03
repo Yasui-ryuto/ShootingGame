@@ -7,7 +7,11 @@ public class WaveController : MonoBehaviour
 {
     private GameManager manager;
     private NamePlateController namePlateCon;
-    [SerializeField] private Situation situation = 0;
+
+    [SerializeField] private bool isWaveStart = true; //ウェーブが始まってるかのフラグ
+    [SerializeField] private GameObject textPrefab; //「Press Space to Start」のプレハブ
+    private GameObject gameStartText; //シーン内にあるtextPrefab
+    [SerializeField] private float diedTimeScale = 0.2f; //死亡時演出の時間の速さ
 
     [Header("EnemyObject")]
     [SerializeField] private GameObject enemyWhip;
@@ -19,47 +23,90 @@ public class WaveController : MonoBehaviour
     [Header("EnemyBreakEffect")]
     [SerializeField] private GameObject[] diedEffectPrefab;
 
-    [Header("EnemySetting")]
-    [SerializeField] private Vector3 firstPos;
-
-    private bool isWaveStart = true; //ウェーブが始まってるかのフラグ
-
     private void Start()
     {
         manager = GameManager.Incetance;
         namePlateCon = transform.GetComponent<NamePlateController>();
+        manager.gameOver.SetActive(false);
+        gameStartText = manager.empty;
     }
+
     private void Update()
     {
-        switch (situation)
+        if(manager.situation == Situation.Died)
         {
-            case Situation.GameInterval:
-                GameInterval();
-                break;
-            case Situation.Wave1:
-                Wave1();
-                break;
-            case Situation.Wave2:
-                Wave2();
-                break;
-            case Situation.Wave3:
-                Wave3();
-                break;
-            case Situation.Wave4:
-                Wave4();
-                break;
-            case Situation.Wave5:
-                Wave5();
-                break;
 
+        }
+        else if(manager.situation == Situation.GameClear)
+        {
+
+        }
+        else if (isWaveStart)
+        {
+            switch (manager.situation)
+            {
+                case Situation.GameInterval:
+                    GameInterval();
+                    break;
+
+                case Situation.Wave1:
+                    StartCoroutine(Wave1Start());
+                    isWaveStart = false;
+                    break;
+
+                case Situation.Wave2:
+                    StartCoroutine(Wave2Start());
+                    isWaveStart = false;
+                    break;
+
+                case Situation.Wave3:
+                    StartCoroutine(Wave3Start());
+                    isWaveStart = false;
+                    break;
+
+                case Situation.Wave4:
+                    StartCoroutine(Wave4Start());
+                    isWaveStart = false;
+                    break;
+
+                case Situation.Wave5:
+                    StartCoroutine(Wave5Start());
+                    isWaveStart = false;
+                    break;
+            }
+        }
+        Guide();
+    }
+
+    private void Guide()
+    {
+        //操作ガイドをエスケープで開閉できる
+        //プレイヤーが死んでいないとき
+        if (Keyboard.current.escapeKey.wasPressedThisFrame && Time.timeScale != diedTimeScale)
+        {
+            if(manager.situation == Situation.ControllerGuide)
+            {
+                GetComponent<ButtonController>().CloseGuide();
+            }
+            else
+            {
+                GetComponent<ButtonController>().OpenGuide();
+            }
         }
     }
 
     private void GameInterval()
     {
+        if(gameStartText == manager.empty)
+        {
+            gameStartText = Instantiate(textPrefab, GameObject.Find("Canvas").transform);
+        }
         //スペースキーを押して３秒後ウェーブ１開始
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
+            isWaveStart = false;
+            Destroy(gameStartText);
+            gameStartText = manager.empty;
             StartCoroutine(GameStart());
         }
     }
@@ -75,40 +122,28 @@ public class WaveController : MonoBehaviour
         Debug.Log("Start");
         yield return new WaitForSeconds(1);
 
-        situation++;
-    }
-
-    private void Wave1()
-    {
-        //Wave1にに1回だけ実行
-        if (isWaveStart)
+        //コンティニュー時にプレイヤーを再生成する
+        if(manager.player == manager.empty)
         {
-            StartCoroutine(Wave1Start());
-            isWaveStart = false;
+            manager.player = Instantiate(manager.playerPrefab, new Vector3(0.0f, -4.0f, 0.0f), Quaternion.identity);
+            manager.player.GetComponent<PlayerShotBullet>().enabled = false;
         }
+
+        isWaveStart = true;
+        manager.situation++;
     }
 
     private IEnumerator Wave1Start()
     {
-        manager.enemy[0] = Instantiate(enemyWave, firstPos, Quaternion.identity); //敵の生成
+        manager.enemy[0] = Instantiate(enemyWave, new Vector3(0.0f, 4.0f, 0.0f), Quaternion.identity); //敵の生成
         manager.enemy[0].GetComponent<EnemyShotBullet>().enabled = false; //敵の弾の発射を停止
 
         GetComponent<NamePlateController>().SetbarStart(false); //barStart(HPBar演出フラグ)をfalseにする
 
         yield return StartCoroutine(namePlateCon.StartHPBar()); //HPBarの演出
 
-        player.GetComponent<PlayerShotBullet>().enabled = true; //プレイヤーの弾の発射を再開
+        manager.player.GetComponent<PlayerShotBullet>().enabled = true; //プレイヤーの弾の発射を再開
         manager.enemy[0].GetComponent<EnemyShotBullet>().enabled = true; //敵の弾の発射を再開
-    }
-
-    private void Wave2()
-    {
-        //敵の生成
-        if (isWaveStart)
-        {
-            StartCoroutine(Wave2Start());
-            isWaveStart = false;
-        }
     }
 
     private IEnumerator Wave2Start()
@@ -122,20 +157,10 @@ public class WaveController : MonoBehaviour
 
         yield return StartCoroutine(namePlateCon.StartHPBar()); //HPBarの演出
 
-        player.GetComponent<PlayerShotBullet>().enabled = true; //プレイヤーの弾の発射を再開
+        manager.player.GetComponent<PlayerShotBullet>().enabled = true; //プレイヤーの弾の発射を再開
         manager.enemy[0].GetComponent<EnemyShotBullet>().enabled = true; //敵の弾の発射を再開
         manager.enemy[1].GetComponent<EnemyShotBullet>().enabled = true; //敵の弾の発射を再開
 
-    }
-
-    private void Wave3()
-    {
-        //Wave3にに3回だけ実行
-        if (isWaveStart)
-        {
-            StartCoroutine(Wave3Start());
-            isWaveStart = false;
-        }
     }
 
     private IEnumerator Wave3Start()
@@ -149,19 +174,9 @@ public class WaveController : MonoBehaviour
 
         yield return StartCoroutine(namePlateCon.StartHPBar()); //HPBarの演出
 
-        player.GetComponent<PlayerShotBullet>().enabled = true; //プレイヤーの弾の発射を再開
+        manager.player.GetComponent<PlayerShotBullet>().enabled = true; //プレイヤーの弾の発射を再開
         manager.enemy[0].GetComponent<LaserAttacker>().enabled = true; //敵の弾の発射を再開
         manager.enemy[1].GetComponent<LaserAttacker>().enabled = true; //敵の弾の発射を再開
-    }
-
-    private void Wave4()
-    {
-        //Wave4にに1回だけ実行
-        if (isWaveStart)
-        {
-            StartCoroutine(Wave4Start());
-            isWaveStart = false;
-        }
     }
 
     private IEnumerator Wave4Start()
@@ -175,19 +190,9 @@ public class WaveController : MonoBehaviour
 
         yield return StartCoroutine(namePlateCon.StartHPBar()); //HPBarの演出
 
-        player.GetComponent<PlayerShotBullet>().enabled = true; //プレイヤーの弾の発射を再開
+        manager.player.GetComponent<PlayerShotBullet>().enabled = true; //プレイヤーの弾の発射を再開
         manager.enemy[0].GetComponent<StopTemporarilyAttacker>().enabled = true; //敵の弾の発射を再開
         manager.enemy[1].GetComponent<LaserAttacker>().enabled = true; //敵の弾の発射を再開
-    }
-
-    private void Wave5()
-    {
-        //Wave5にに1回だけ実行
-        if (isWaveStart)
-        {
-            StartCoroutine(Wave5Start());
-            isWaveStart = false;
-        }
     }
 
     private IEnumerator Wave5Start()
@@ -203,13 +208,13 @@ public class WaveController : MonoBehaviour
 
         yield return StartCoroutine(namePlateCon.StartHPBar()); //HPBarの演出
 
-        player.GetComponent<PlayerShotBullet>().enabled = true; //プレイヤーの弾の発射を再開
+        manager.player.GetComponent<PlayerShotBullet>().enabled = true; //プレイヤーの弾の発射を再開
         manager.enemy[0].GetComponent<LaserAttacker>().enabled = true; //敵の弾の発射を再開
         manager.enemy[1].GetComponent<StopTemporarilyAttacker>().enabled = true; //敵の弾の発射を再開
         manager.enemy[2].GetComponent<EnemyShotBullet>().enabled = true; //敵の弾の発射を再開
     }
 
-    public IEnumerator BrokenEnemy(GameObject enemy)
+    public IEnumerator BreakEnemy(GameObject enemy)
     {
         int enemyCount = 0; //配列内のemptyオブジェクトの数
 
@@ -220,6 +225,7 @@ public class WaveController : MonoBehaviour
                 //配列内のオブジェクトと破壊したいオブジェクトが一緒だった時
                 if (manager.enemy[i] == enemy)
                 {
+                    //弾の停止
                     if (enemy.GetComponent<EnemyShotBullet>())
                     {
                         enemy.GetComponent<EnemyShotBullet>().enabled = false;
@@ -250,12 +256,13 @@ public class WaveController : MonoBehaviour
 
     private IEnumerator NextWave()
     {
-        player.GetComponent<PlayerShotBullet>().enabled = false; //プレイヤーの弾の発射を停止
+        manager.player.GetComponent<PlayerShotBullet>().enabled = false; //プレイヤーの弾の発射を停止
 
         yield return new WaitForSeconds(2);
 
-        situation++;
+        manager.situation++;
         isWaveStart = true;
+        //HPバーの初期化
         for (int i = 0; i < manager.HPBars.Length; i++)
         {
             Destroy(manager.HPBars[i]);
@@ -264,7 +271,12 @@ public class WaveController : MonoBehaviour
         GetComponent<NamePlateController>().SetbarStart(false);
     }
 
-    //敵の消滅エフェクト
+    /// <summary>
+    /// 消滅エフェクト
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="effects"></param>
+    /// <returns></returns>
     public IEnumerator DiedEffect(GameObject obj, GameObject[] effects)
     {
         ParticleSystem[] effect = new ParticleSystem[effects.Length];
@@ -287,15 +299,41 @@ public class WaveController : MonoBehaviour
                     enemy.GetComponent <LaserAttacker>().enabled = false;
                 }
             }
+
+            Time.timeScale = diedTimeScale;
         }
 
         obj.transform.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0);
 
         yield return new WaitWhile(() => MaxTimeEffect(effect).IsAlive(true));
 
+        if (obj.CompareTag("Player"))
+        {
+            Time.timeScale = 1.0f;
+            manager.situation = Situation.Died;
+            for(int i = 0; i < manager.enemy.Length; i++)
+            {
+                if (manager.enemy[i] != manager.empty)
+                {
+                    Destroy(manager.enemy[i]);
+                    Destroy(manager.HPBars[i]);
+                    manager.enemy[i] = manager.empty;
+                    manager.HPBars[i] = manager.empty;
+                }
+            }
+            isWaveStart = true;
+            manager.gameOver.SetActive(true);
+            manager.player = manager.empty;
+        }
+
         Destroy(obj);
     }
 
+    /// <summary>
+    /// 配列内の最長エフェクト探す
+    /// </summary>
+    /// <param name="effects"></param>
+    /// <returns></returns>
     public ParticleSystem MaxTimeEffect(ParticleSystem[] effects)
     {
         ParticleSystem maxEffect = null;

@@ -9,24 +9,22 @@ public class PlayerHP : MonoBehaviour
 
     [SerializeField] private GameObject[] diedEffect;
     [SerializeField] private GameObject damageEffect;
-    [SerializeField] private float damageIntervalTime = 0.2f;
-    [SerializeField] private float damageAreaStay = 0f;
-    private bool damageOn = false;
+    [SerializeField] private float damageIntervalTime = 0.2f; //ダメージエリアに入っているときのダメージ間隔(秒)
+    [SerializeField] private float damageAreaStay = 0f; //ダメージエリアに入っているフレーム
+    private bool damageOn = false; //ダメージエリアに入っているかのフラグ
     private Collider2D col;
 
     private void Start()
     {
-        playerHPs[0] = playerHP;
-        playerHPs[1] = playerHP;
-        //diedEffect = new ParticleSystem[transform.childCount];
-        //for(int i = 0; i < diedEffect.Length; i++)
-        //{
-        //    diedEffect[i] = transform.GetChild(i).gameObject.GetComponent<ParticleSystem>();
-        //}
+        playerHPs[0] = playerHP; //初期HP
+        playerHPs[1] = playerHP; //現在のHP
+        //コンティニュー時のHPバーの初期化
+        GameManager.Incetance.GetComponent<NamePlateController>().ChangeHPBar(gameObject);
     }
 
     private void Update()
     {
+        //ダメージエリアに入っているとき
         if (damageOn)
         {
             damageAreaStay++;
@@ -80,29 +78,15 @@ public class PlayerHP : MonoBehaviour
     }
     private IEnumerator DamageEffect(GameObject bullet)
     {
-        ParticleSystem effect = Instantiate(damageEffect, player.transform).GetComponent<ParticleSystem>();
+        //エフェクトの生成と再生
+        ParticleSystem effect = Instantiate(damageEffect, Incetance.player.transform).GetComponent<ParticleSystem>();
         effect.transform.position = bullet.transform.position;
         effect.Play();
 
-        yield return new WaitWhile(() => effect.IsAlive());
+        yield return new WaitWhile(() => effect.IsAlive()); //エフェクトが再生されている間待つ
 
         Destroy(effect);
     }
-
-    //private IEnumerator DiedEffect()
-    //{
-    //    foreach(var effect in diedEffect)
-    //    {
-    //        Instantiate()
-    //        effect.Play();
-    //    }
-
-    //    transform.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 0);
-
-    //    yield return new WaitWhile(() => diedEffect[1].IsAlive(true));
-
-    //    Destroy(gameObject);
-    //}
     
     public int[] GetPlayerHPs()
     {

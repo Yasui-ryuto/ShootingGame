@@ -16,8 +16,8 @@ public class LaserPathEffect : MonoBehaviour
 
     void Start()
     {
-        playerDirect = (player.transform.position - transform.position) * effectLength; // プレイヤーの方向を取得
-        endPosition = player.transform.position + playerDirect; //エフェクト終了位置
+        playerDirect = (Incetance.player.transform.position - transform.position) * effectLength; // プレイヤーの方向を取得
+        endPosition = Incetance.player.transform.position + playerDirect; //エフェクト終了位置
 
         //float angle = Mathf.Atan2(playerDirect.y, playerDirect.x) * Mathf.Rad2Deg;
         //transform.rotation = Quaternion.Euler(0.0f, 0.0f, angle);

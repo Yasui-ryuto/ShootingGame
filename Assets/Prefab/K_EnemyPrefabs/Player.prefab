@@ -63,8 +63,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHP
   playerHP: 20
-  diedEffect: []
-  damageEffect: {fileID: 0}
+  diedEffect:
+  - {fileID: 7786650514864039244, guid: 00aafbbfc1ed22b43a3bb539bed61ee4, type: 3}
+  - {fileID: 1498012810336499595, guid: 2201ac41727d19744bc7a90afa539501, type: 3}
+  damageEffect: {fileID: 8660827855302473952, guid: fb3c502f0f4672443b9b8d23927288dc, type: 3}
   damageIntervalTime: 0.5
   damageAreaStay: 0
 --- !u!114 &7728297726729672122

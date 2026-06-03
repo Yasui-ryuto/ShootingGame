@@ -9,7 +9,6 @@ public class PlayerShotBullet : MonoBehaviour
 
     private bool _isInterval = false;
 
-
     private void FixedUpdate()
     {
         if (!_isInterval)
