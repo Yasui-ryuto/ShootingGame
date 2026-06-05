@@ -42,7 +42,7 @@ public class PlayerHP : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("EnemyBullet"))
+        if (other.gameObject.CompareTag("EnemyBullet") || other.gameObject.CompareTag("Enemy"))
         {
             playerHPs[1]--;
             StartCoroutine(DamageEffect(other.gameObject));
@@ -51,14 +51,16 @@ public class PlayerHP : MonoBehaviour
         if (playerHPs[1] == 0)
         {
             playerHPs[1] = -1;
+            gameObject.GetComponent<Collider2D>().enabled = false;
             StartCoroutine(GameManager.Incetance.gameObject.GetComponent<WaveController>().DiedEffect(gameObject, diedEffect));
+
         }
     }
 
     private void OnTriggerStay2D(Collider2D other)
     {
         
-        if (other.gameObject.CompareTag("EnemyBullet"))
+        if (other.gameObject.CompareTag("EnemyBullet") || other.gameObject.CompareTag("Enemy"))
         {
             if (!damageOn)
             {
@@ -70,7 +72,7 @@ public class PlayerHP : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("EnemyBullet"))
+        if (other.gameObject.CompareTag("EnemyBullet") || other.gameObject.CompareTag("Enemy"))
         {
             damageAreaStay = 0f;
             damageOn = false;

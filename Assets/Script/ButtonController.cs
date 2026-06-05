@@ -3,38 +3,35 @@ using static GameManager;
 
 public class ButtonController : MonoBehaviour
 {
-    [SerializeField] private GameObject controlGuide;
+    [SerializeField] private GameObject pauseButton;
+    [SerializeField] private GameObject reStartButton;
     private GameManager manager;
     private Situation tempSitu = Situation.GameInterval;
 
     private void Start()
     {
         manager = Incetance;
-        controlGuide.SetActive(true);
-        manager.situation = Situation.ControllerGuide;
+        pauseButton.SetActive(true);
+        reStartButton.SetActive(false);
     }
 
-    public void CloseGuide()
+    public void PauseFinish()
     {
-        controlGuide.SetActive(false);
+        pauseButton.SetActive(true);
+        reStartButton.SetActive(false);
         Time.timeScale = 1.0f;
         manager.situation = tempSitu;
     }
 
-    public void OpenGuide()
+    public void PauseStart()
     {
-        if(tempSitu == Situation.ControllerGuide)
-        {
-            tempSitu = Situation.GameInterval;
-        }
-        else
-        {
-            tempSitu = manager.situation;
-        }
-        manager.situation = Situation.ControllerGuide;
-        controlGuide.SetActive(true);
+        tempSitu = manager.situation;
+        manager.situation = Situation.Pause;
+        pauseButton.SetActive(false);
+        reStartButton.SetActive(true);
         Time.timeScale = 0.0f;
     }
+
 
     public void ContinueButton()
     {

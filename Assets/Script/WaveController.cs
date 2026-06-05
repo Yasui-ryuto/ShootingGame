@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.InputSystem;
 using static GameManager;
+using UnityEngine.UI;
+
 
 public class WaveController : MonoBehaviour
 {
@@ -22,6 +24,9 @@ public class WaveController : MonoBehaviour
 
     [Header("EnemyBreakEffect")]
     [SerializeField] private GameObject[] diedEffectPrefab;
+
+    [Header("Button")]
+    [SerializeField] private GameObject pauseButton;
 
     private void Start()
     {
@@ -73,24 +78,29 @@ public class WaveController : MonoBehaviour
                     StartCoroutine(Wave5Start());
                     isWaveStart = false;
                     break;
+
+                case Situation.Wave6:
+                    StartCoroutine(Wave6Start());
+                    isWaveStart = false;
+                    break;
             }
         }
-        Guide();
+        Pause();
     }
 
-    private void Guide()
+    private void Pause()
     {
-        //‘€ìƒKƒCƒh‚ğƒGƒXƒP[ƒv‚ÅŠJ•Â‚Å‚«‚é
+        //ˆê’â~iƒ|[ƒYj‚ğƒGƒXƒP[ƒv‚Å‚Å‚«‚é
         //ƒvƒŒƒCƒ„[‚ª€‚ñ‚Å‚¢‚È‚¢‚Æ‚«
-        if (Keyboard.current.escapeKey.wasPressedThisFrame && Time.timeScale != diedTimeScale)
+        if (Keyboard.current.escapeKey.wasPressedThisFrame && Time.timeScale != diedTimeScale && manager.situation != Situation.GameInterval && manager.situation != Situation.Died)
         {
-            if(manager.situation == Situation.ControllerGuide)
+            if(manager.situation == Situation.Pause)
             {
-                GetComponent<ButtonController>().CloseGuide();
+                GetComponent<ButtonController>().PauseFinish();
             }
             else
             {
-                GetComponent<ButtonController>().OpenGuide();
+                GetComponent<ButtonController>().PauseStart();
             }
         }
     }
@@ -129,6 +139,7 @@ public class WaveController : MonoBehaviour
             manager.player.GetComponent<PlayerShotBullet>().enabled = false;
         }
 
+        pauseButton.GetComponent<Button>().interactable = true;
         isWaveStart = true;
         manager.situation++;
     }
@@ -214,6 +225,28 @@ public class WaveController : MonoBehaviour
         manager.enemy[2].GetComponent<EnemyShotBullet>().enabled = true; //“G‚Ì’e‚Ì”­Ë‚ğÄŠJ
     }
 
+    private IEnumerator Wave6Start()
+    {
+        manager.enemy[0] = Instantiate(enemyLaser, new Vector3(-6f, 4f, 0f), Quaternion.identity); //“G‚Ì¶¬
+        manager.enemy[0].GetComponent<LaserAttacker>().enabled = false; //“G‚Ì’e‚Ì”­Ë‚ğ’â~
+        manager.enemy[1] = Instantiate(enemyStop, new Vector3(6f, 4f, 0f), Quaternion.identity); //“G‚Ì¶¬
+        manager.enemy[1].GetComponent<StopTemporarilyAttacker>().enabled = false; //“G‚Ì’e‚Ì”­Ë‚ğ’â~
+        manager.enemy[2] = Instantiate(enemyWhip, new Vector3(4f, 4f, 0f), Quaternion.identity); //“G‚Ì¶¬
+        manager.enemy[2].GetComponent<EnemyShotBullet>().enabled = false; //“G‚Ì’e‚Ì”­Ë‚ğ’â~
+        manager.enemy[3] = Instantiate(enemyWhip, new Vector3(-4f, 4f, 0f), Quaternion.identity); //“G‚Ì¶¬
+        manager.enemy[3].GetComponent<EnemyShotBullet>().enabled = false; //“G‚Ì’e‚Ì”­Ë‚ğ’â~
+
+        GetComponent<NamePlateController>().SetbarStart(false);
+
+        yield return StartCoroutine(namePlateCon.StartHPBar()); //HPBar‚Ì‰‰o
+
+        manager.player.GetComponent<PlayerShotBullet>().enabled = true; //ƒvƒŒƒCƒ„[‚Ì’e‚Ì”­Ë‚ğÄŠJ
+        manager.enemy[0].GetComponent<LaserAttacker>().enabled = true; //“G‚Ì’e‚Ì”­Ë‚ğÄŠJ
+        manager.enemy[1].GetComponent<StopTemporarilyAttacker>().enabled = true; //“G‚Ì’e‚Ì”­Ë‚ğÄŠJ
+        manager.enemy[2].GetComponent<EnemyShotBullet>().enabled = true; //“G‚Ì’e‚Ì”­Ë‚ğÄŠJ
+        manager.enemy[3].GetComponent<EnemyShotBullet>().enabled = true; //“G‚Ì’e‚Ì”­Ë‚ğÄŠJ
+    }
+
     public IEnumerator BreakEnemy(GameObject enemy)
     {
         int enemyCount = 0; //”z—ñ“à‚ÌemptyƒIƒuƒWƒFƒNƒg‚Ì”
@@ -290,16 +323,20 @@ public class WaveController : MonoBehaviour
         {
             foreach(GameObject enemy in manager.enemy)
             {
-                if (enemy.GetComponent<EnemyShotBullet>())
+                if (enemy != null)
                 {
-                    enemy.GetComponent<EnemyShotBullet>().enabled = false;
-                }
-                else if (enemy.GetComponent<LaserAttacker>())
-                {
-                    enemy.GetComponent <LaserAttacker>().enabled = false;
+                    if (enemy.GetComponent<EnemyShotBullet>())
+                    {
+                        enemy.GetComponent<EnemyShotBullet>().enabled = false;
+                    }
+                    else if (enemy.GetComponent<LaserAttacker>())
+                    {
+                        enemy.GetComponent<LaserAttacker>().enabled = false;
+                    }
                 }
             }
 
+            pauseButton.GetComponent<Button>().interactable = false;
             Time.timeScale = diedTimeScale;
         }
 
@@ -325,7 +362,10 @@ public class WaveController : MonoBehaviour
             manager.gameOver.SetActive(true);
             manager.player = manager.empty;
         }
-
+        foreach(var eff in effect)
+        {
+            Destroy(eff.gameObject);
+        }
         Destroy(obj);
     }
 
