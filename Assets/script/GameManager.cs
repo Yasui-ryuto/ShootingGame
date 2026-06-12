@@ -10,9 +10,22 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public GameObject[] enemy = new GameObject[10]; //ステージ上にある敵を入れる
     [HideInInspector] public GameObject[] HPBars = new GameObject[10]; //HPBarを入れる
 
-    public Situation situation = 0;
-    public GameObject gameOver;
+    [Header("BGM")]
+    public AudioClip startBGM;
+    public AudioClip mainBGM;
 
+    [Header("Sound")]
+    public AudioClip shoot;
+    public AudioClip hit;
+    public AudioClip rotation1;
+    public AudioClip rotation2;
+    public AudioClip bom1;
+    public AudioClip bom2;
+    public AudioClip bom3;
+    public AudioClip bom4;
+
+    [Header("Situation")]
+    public Situation situation = 0;
 
     public enum Situation
     {
@@ -23,8 +36,8 @@ public class GameManager : MonoBehaviour
         Wave4,
         Wave5,
         Wave6,
-        Pause,
         GameClear,
+        Pause,
         Died,
     }
 
@@ -42,6 +55,8 @@ public class GameManager : MonoBehaviour
             enemy[i] = empty;
             HPBars[i] = empty;
         }
+
+        GetComponent<AudioSource>().loop = true;
     }
 
 }

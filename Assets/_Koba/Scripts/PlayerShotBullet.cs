@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using static GameManager;
 
 public class PlayerShotBullet : MonoBehaviour
 {
@@ -22,6 +23,7 @@ public class PlayerShotBullet : MonoBehaviour
         _isInterval = true;
 
         GameObject bullet = Instantiate(_bullet, transform.position, Quaternion.identity);
+        GetComponent<AudioSource>().PlayOneShot(Incetance.shoot);
         Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
 
         if (bulletRb != null)

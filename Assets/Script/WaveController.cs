@@ -11,9 +11,15 @@ public class WaveController : MonoBehaviour
     private NamePlateController namePlateCon;
 
     [SerializeField] private bool isWaveStart = true; //ウェーブが始まってるかのフラグ
-    [SerializeField] private GameObject textPrefab; //「Press Space to Start」のプレハブ
-    private GameObject gameStartText; //シーン内にあるtextPrefab
+   
     [SerializeField] private float diedTimeScale = 0.2f; //死亡時演出の時間の速さ
+
+    [Header("Text")]
+    private GameObject Canvas;
+    [SerializeField] private GameObject gameStartObj; // 「Press Space to Start」のプレハブ
+    [SerializeField] private GameObject gameClearObj; // 「Game Clear」
+    [SerializeField] private GameObject gameOverObj; // 「Game Over」
+    private GameObject textObj; //シーン内にあるtext
 
     [Header("EnemyObject")]
     [SerializeField] private GameObject enemyWhip;
@@ -32,19 +38,31 @@ public class WaveController : MonoBehaviour
     {
         manager = GameManager.Incetance;
         namePlateCon = transform.GetComponent<NamePlateController>();
-        manager.gameOver.SetActive(false);
-        gameStartText = manager.empty;
+        Canvas = GameObject.Find("Canvas");
+        textObj = manager.empty;
+
+        gameStartObj.SetActive(false);
+        gameClearObj.SetActive(false);
+        gameOverObj.SetActive(false);
     }
 
     private void Update()
     {
-        if(manager.situation == Situation.Died)
+        if (manager.situation == Situation.Died)
         {
-
+            if (textObj == manager.empty)
+            { 
+                textObj = gameOverObj;
+                textObj.SetActive(true);
+            }
         }
-        else if(manager.situation == Situation.GameClear)
+        else if (manager.situation == Situation.GameClear)
         {
-
+            if (textObj == manager.empty)
+            {
+                textObj = gameClearObj;
+                textObj.SetActive(true);
+            }
         }
         else if (isWaveStart)
         {
@@ -56,6 +74,7 @@ public class WaveController : MonoBehaviour
 
                 case Situation.Wave1:
                     StartCoroutine(Wave1Start());
+                    StartCoroutine(ChangeBGM());
                     isWaveStart = false;
                     break;
 
@@ -107,22 +126,38 @@ public class WaveController : MonoBehaviour
 
     private void GameInterval()
     {
-        if(gameStartText == manager.empty)
+        if (textObj == manager.empty || textObj == gameOverObj || textObj == gameClearObj)
         {
-            gameStartText = Instantiate(textPrefab, GameObject.Find("Canvas").transform);
+            if (textObj != manager.empty)
+            {
+                textObj.SetActive(false);
+            }
+            textObj = gameStartObj;
+            textObj.SetActive(true);
+            GetComponent<AudioSource>().clip = manager.startBGM;
+            GetComponent<AudioSource>().Play();
         }
         //スペースキーを押して３秒後ウェーブ１開始
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
             isWaveStart = false;
-            Destroy(gameStartText);
-            gameStartText = manager.empty;
+            textObj.SetActive(false);
+            textObj = manager.empty;
             StartCoroutine(GameStart());
         }
     }
 
     private IEnumerator GameStart()
     {
+        //コンティニュー時にプレイヤーを再生成する
+        if (manager.player != manager.empty)
+        {
+            Destroy(manager.player);
+        }
+
+        manager.player = Instantiate(manager.playerPrefab, new Vector3(0.0f, -4.0f, 0.0f), Quaternion.identity);
+        manager.player.GetComponent<PlayerShotBullet>().enabled = false;
+
         Debug.Log("3");
         yield return new WaitForSeconds(1);
         Debug.Log("2");
@@ -131,13 +166,6 @@ public class WaveController : MonoBehaviour
         yield return new WaitForSeconds(1);
         Debug.Log("Start");
         yield return new WaitForSeconds(1);
-
-        //コンティニュー時にプレイヤーを再生成する
-        if(manager.player == manager.empty)
-        {
-            manager.player = Instantiate(manager.playerPrefab, new Vector3(0.0f, -4.0f, 0.0f), Quaternion.identity);
-            manager.player.GetComponent<PlayerShotBullet>().enabled = false;
-        }
 
         pauseButton.GetComponent<Button>().interactable = true;
         isWaveStart = true;
@@ -155,6 +183,19 @@ public class WaveController : MonoBehaviour
 
         manager.player.GetComponent<PlayerShotBullet>().enabled = true; //プレイヤーの弾の発射を再開
         manager.enemy[0].GetComponent<EnemyShotBullet>().enabled = true; //敵の弾の発射を再開
+    }
+
+    private IEnumerator ChangeBGM()
+    {
+        GetComponent<AudioSource>().loop = false;
+        while (GetComponent<AudioSource>().isPlaying)
+        {
+            yield return null;
+
+        }
+        GetComponent<AudioSource>().clip = manager.mainBGM;
+        GetComponent<AudioSource>().loop = true;
+        GetComponent<AudioSource>().Play();
     }
 
     private IEnumerator Wave2Start()
@@ -247,6 +288,7 @@ public class WaveController : MonoBehaviour
         manager.enemy[3].GetComponent<EnemyShotBullet>().enabled = true; //敵の弾の発射を再開
     }
 
+
     public IEnumerator BreakEnemy(GameObject enemy)
     {
         int enemyCount = 0; //配列内のemptyオブジェクトの数
@@ -335,7 +377,9 @@ public class WaveController : MonoBehaviour
                     }
                 }
             }
-
+            obj.GetComponent<PlayerShotBullet>().StopAllCoroutines();
+            obj.GetComponent<AudioSource>().clip = manager.bom3;
+            obj.GetComponent<AudioSource>().Play();
             pauseButton.GetComponent<Button>().interactable = false;
             Time.timeScale = diedTimeScale;
         }
@@ -359,7 +403,7 @@ public class WaveController : MonoBehaviour
                 }
             }
             isWaveStart = true;
-            manager.gameOver.SetActive(true);
+            //manager.gameOver.SetActive(true);
             manager.player = manager.empty;
         }
         foreach(var eff in effect)

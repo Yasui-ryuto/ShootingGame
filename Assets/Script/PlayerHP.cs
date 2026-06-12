@@ -32,10 +32,10 @@ public class PlayerHP : MonoBehaviour
             if (damageAreaStay > damageIntervalTime * 60)
             {
                 playerHPs[1]--;
+                GetComponent<AudioSource>().PlayOneShot(Incetance.bom2);
                 StartCoroutine(DamageEffect(col.gameObject));
                 GameManager.Incetance.GetComponent<NamePlateController>().ChangeHPBar(gameObject);
                 damageAreaStay = 0f;
-
             }
         }
     }
@@ -45,6 +45,7 @@ public class PlayerHP : MonoBehaviour
         if (other.gameObject.CompareTag("EnemyBullet") || other.gameObject.CompareTag("Enemy"))
         {
             playerHPs[1]--;
+            GetComponent<AudioSource>().PlayOneShot(Incetance.bom2);
             StartCoroutine(DamageEffect(other.gameObject));
             GameManager.Incetance.GetComponent<NamePlateController>().ChangeHPBar(gameObject);
         }
@@ -53,13 +54,11 @@ public class PlayerHP : MonoBehaviour
             playerHPs[1] = -1;
             gameObject.GetComponent<Collider2D>().enabled = false;
             StartCoroutine(GameManager.Incetance.gameObject.GetComponent<WaveController>().DiedEffect(gameObject, diedEffect));
-
         }
     }
 
     private void OnTriggerStay2D(Collider2D other)
     {
-        
         if (other.gameObject.CompareTag("EnemyBullet") || other.gameObject.CompareTag("Enemy"))
         {
             if (!damageOn)

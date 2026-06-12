@@ -33,10 +33,10 @@ public class ButtonController : MonoBehaviour
     }
 
 
-    public void ContinueButton()
+    public void ReStartButton()
     {
         manager.situation = Situation.GameInterval;
-        manager.gameOver.SetActive(false);
+        //manager.gameOver.SetActive(false);
     }
 
     public void Exit()

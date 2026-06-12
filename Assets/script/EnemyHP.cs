@@ -21,6 +21,7 @@ public class EnemyHP : MonoBehaviour
 
             //HP -= collision.;
             HPs[1]--;
+            GetComponent<AudioSource>().PlayOneShot(Incetance.hit);
             manager.gameObject.GetComponent<NamePlateController>().ChangeHPBar(gameObject);
 
             if (HPs[1] == 0)
@@ -33,11 +34,10 @@ public class EnemyHP : MonoBehaviour
                 }
                 else if (gameObject.GetComponent<LaserAttacker>())
                 {
-                    gameObject.GetComponent <LaserAttacker>().enabled = false;
+                    gameObject.GetComponent<LaserAttacker>().enabled = false;
                 }
 
-
-                    HPs[1] = -1;
+                HPs[1] = -1;
             }
         }
     }
