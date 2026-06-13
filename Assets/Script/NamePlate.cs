@@ -17,14 +17,17 @@ public class NamePlate : MonoBehaviour
 
     private void Update()
     {
-        if(isStart)
+        if (Incetance.situation != Situation.Pause)
         {
-            amount += HPBarInc;
-            HPBar.GetComponent<Image>().fillAmount = amount; //HPBar‚Ì’·‚³
-            if(amount > 1)
+            if (isStart)
             {
-                GameManager.Incetance.GetComponent<NamePlateController>().SetbarStart(true);
-                isStart = false;
+                amount += HPBarInc;
+                HPBar.GetComponent<Image>().fillAmount = amount; //HPBar‚Ì’·‚³
+                if (amount > 1)
+                {
+                    GameManager.Incetance.GetComponent<NamePlateController>().SetbarStart(true);
+                    isStart = false;
+                }
             }
         }
     }

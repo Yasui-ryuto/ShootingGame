@@ -15,6 +15,7 @@ public class LaserAttacker : MonoBehaviour
         if (isLaserShoot)
         {
             Instantiate(laserEffect, transform.position, Quaternion.identity, transform); //オブジェクトの生成
+            transform.rotation = Quaternion.Euler(0.0f, 0.0f, Mathf.Atan2(Incetance.player.transform.position.y - transform.position.y, Incetance.player.transform.position.x - transform.position.x) * Mathf.Rad2Deg - 90);
             StartCoroutine(DestroyObj()); //生成したオブジェクトを消すコルーチン
         }
     }

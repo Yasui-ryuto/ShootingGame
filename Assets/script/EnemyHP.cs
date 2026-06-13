@@ -21,13 +21,21 @@ public class EnemyHP : MonoBehaviour
 
             //HP -= collision.;
             HPs[1]--;
+            GetComponent<AudioSource>().PlayOneShot(Incetance.hit);
             manager.gameObject.GetComponent<NamePlateController>().ChangeHPBar(gameObject);
 
             if (HPs[1] == 0)
             {
-                StartCoroutine(manager.gameObject.GetComponent<WaveController>().BrokenEnemy(gameObject));
+                StartCoroutine(manager.gameObject.GetComponent<WaveController>().BreakEnemy(gameObject));
                 gameObject.GetComponent<Collider2D>().enabled = false;
-                gameObject.GetComponent<EnemyShotBullet>().enabled = false;
+                if (gameObject.GetComponent<EnemyShotBullet>())
+                {
+                    gameObject.GetComponent<EnemyShotBullet>().enabled = false;
+                }
+                else if (gameObject.GetComponent<LaserAttacker>())
+                {
+                    gameObject.GetComponent<LaserAttacker>().enabled = false;
+                }
 
                 HPs[1] = -1;
             }

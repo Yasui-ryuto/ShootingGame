@@ -16,8 +16,8 @@ public class LaserPathEffect : MonoBehaviour
 
     void Start()
     {
-        playerDirect = (player.transform.position - transform.position) * effectLength; // プレイヤーの方向を取得
-        endPosition = player.transform.position + playerDirect; //エフェクト終了位置
+        playerDirect = (Incetance.player.transform.position - transform.position) * effectLength; // プレイヤーの方向を取得
+        endPosition = Incetance.player.transform.position + playerDirect; //エフェクト終了位置
 
         //float angle = Mathf.Atan2(playerDirect.y, playerDirect.x) * Mathf.Rad2Deg;
         //transform.rotation = Quaternion.Euler(0.0f, 0.0f, angle);
@@ -27,9 +27,9 @@ public class LaserPathEffect : MonoBehaviour
     void Update()
     {
         //エフェクト終了位置に近づいたら
-        if (Vector3.Distance(transform.position, player.transform.position + playerDirect) > 1f)
+        if (Vector3.Distance(transform.position, endPosition) > 1f)
         {
-            transform.position = Vector3.SmoothDamp(transform.position, player.transform.position + playerDirect, ref velocity, 0.02f); //オブジェクトを終了位置に近づける
+            transform.position = Vector3.SmoothDamp(transform.position, endPosition, ref velocity, 0.02f); //オブジェクトを終了位置に近づける
         }
         else if(isLaser)
         {
